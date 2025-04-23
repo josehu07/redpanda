@@ -32,9 +32,12 @@
 #include <vector>
 namespace storage {
 
-static inline ss::sstring random_dir() {
-    return ssx::sformat(
-      "test.dir_{}", random_generators::gen_alphanum_string(7));
+inline ss::sstring random_dir() {
+    char* tmpdir = std::getenv("TEST_TMPDIR");
+    if (!tmpdir) {
+        return ss::format("test.dir_{}", time(0));
+    }
+    return std::filesystem::path(tmpdir) / ss::format("test.dir_{}", time(0));
 }
 
 inline log_config log_builder_config() {

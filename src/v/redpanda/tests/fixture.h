@@ -83,6 +83,14 @@ using empty_seed_starts_cluster
 
 using namespace std::chrono_literals;
 
+inline ss::sstring test_directory() {
+    char* tmpdir = std::getenv("TEST_TMPDIR");
+    if (!tmpdir) {
+        return ss::format("test.dir_{}", time(0));
+    }
+    return std::filesystem::path(tmpdir) / ss::format("test.dir_{}", time(0));
+}
+
 class redpanda_thread_fixture {
 public:
     static constexpr const char* rack_name = "i-am-rack";
@@ -192,7 +200,7 @@ public:
           8082,
           8081,
           {},
-          ssx::sformat("test.dir_{}", time(0)),
+          test_directory(),
           std::nullopt,
           true) {}
 
@@ -224,7 +232,7 @@ public:
           8082,
           8081,
           {},
-          ssx::sformat("test.dir_{}", time(0)),
+          test_directory(),
           std::nullopt,
           true,
           get_s3_config(port, url_style),
@@ -246,7 +254,7 @@ public:
           8082,
           8081,
           {},
-          ssx::sformat("test.dir_{}", time(0)),
+          test_directory(),
           std::nullopt,
           true,
           get_s3_config(port, url_style),
@@ -275,7 +283,7 @@ public:
           8082,
           8081,
           {},
-          ssx::sformat("test.dir_{}", time(0)),
+          test_directory(),
           std::nullopt,
           true,
           get_s3_config(port, url_style),
